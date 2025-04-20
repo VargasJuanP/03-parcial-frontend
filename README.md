@@ -1,5 +1,13 @@
 # Parcial 2
 
+## Demo
+
+Se tiene una demo del proyecto funcionando en el siguiente link:
+
+https://02-parcial-frontend.vercel.app/
+
+## Local
+
 Para correr el proyecto, se debe instalar las dependencias:
 
 ```bash

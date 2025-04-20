@@ -3,7 +3,7 @@ import { db } from "../../firebase/config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import "../../styles/createPost.css";
 
-function CreatePost({ user }) {
+function CreatePost({ user, onPostCreated }) {
   const [postContent, setPostContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -25,6 +25,9 @@ function CreatePost({ user }) {
       });
       
       setPostContent("");
+
+      // Actualizar los posts
+      onPostCreated(prev => prev + 1);
     } catch (err) {
       setError("Error al publicar. Inténtalo de nuevo.");
     } finally {

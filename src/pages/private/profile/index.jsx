@@ -14,6 +14,8 @@ function Profile({ user }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Para que se actualice la lista de posts cuando se crea un nuevo post
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -35,20 +37,14 @@ function Profile({ user }) {
       }
     };
 
-    if (user) {
-      fetchPosts();
-    }
-  }, [user]);
-
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
+    fetchPosts();
+  }, [refresh]);
+  
   return (
     <div className="profile-container">
       <div>
         <h3>Crear nueva publicación</h3>
-        <CreatePost user={user} />
+        <CreatePost user={user} onPostCreated={setRefresh} />
       </div>
 
       <div className="posts-container">

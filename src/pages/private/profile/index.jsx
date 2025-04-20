@@ -61,7 +61,7 @@ function Profile({ user }) {
         )}
 
         {posts.map((post) => (
-          <Post key={post.id} post={post} handleRefresh={handleRefresh} />
+          <Post key={post.id} user={user} post={post} handleRefresh={handleRefresh} />
         ))}
       </div>
     </div>

@@ -34,3 +34,33 @@
   border: none;
   cursor: pointer;
 }
+
+.post-footer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.like-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.like-count {
+  font-size: 14px;
+  color: #666;
+}
+
+.like-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.like-button.liked svg {
+  fill: #1da1f2;
+}

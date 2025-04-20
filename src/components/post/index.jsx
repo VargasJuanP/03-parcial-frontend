@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { useState, useEffect } from "react";
+import CreateReply from "./createReply";
 
 function Post({ user, post, handleRefresh }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -104,7 +105,7 @@ function Post({ user, post, handleRefresh }) {
   return (
     <div className="post">
       <div className="post-header">
-        <span className="author-name">{post.authorName}</span>
+        <span className="author-name">@{post.authorName}</span>
         <span className="post-date">{formatDate(post.createdAt)}</span>
         <button className="delete-post" onClick={handleDelete}>
           <svg
@@ -135,6 +136,12 @@ function Post({ user, post, handleRefresh }) {
             </svg>
           </button>
           <span className="like-count">{likeCount}</span>
+        </div>
+        <div className="replies">
+          <h3>Respuestas</h3>
+          <div className="replies-container">
+            <CreateReply user={user} postId={post.id} />
+          </div>
         </div>
       </div>
     </div>

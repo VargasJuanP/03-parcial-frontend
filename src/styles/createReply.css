@@ -1,0 +1,22 @@
+.create-reply {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: 10px;
+}
+
+.create-reply textarea {
+  width: 100%;
+  height: 20px;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.create-reply button {
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+}

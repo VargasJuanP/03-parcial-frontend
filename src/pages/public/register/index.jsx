@@ -38,7 +38,7 @@ function Register() {
       setFormData({ username: "", email: "", password: "" });
       setSuccess(true);
     } catch (error) {
-      setError(error.message);
+      setError("Error al registrar el usuario. Inténtalo de nuevo.");
     }
   };
 

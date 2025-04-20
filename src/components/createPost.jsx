@@ -27,7 +27,6 @@ function CreatePost({ user }) {
       setPostContent("");
     } catch (err) {
       setError("Error al publicar. Inténtalo de nuevo.");
-      console.error("Error al publicar:", err);
     } finally {
       setIsSubmitting(false);
     }

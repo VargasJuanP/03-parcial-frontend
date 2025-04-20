@@ -8,6 +8,7 @@ import Home from "./pages/public/home";
 import Login from "./pages/public/login";
 import Register from "./pages/public/register";
 import Profile from "./pages/private/profile";
+import RecoverPassword from "./pages/public/recover-password";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -70,6 +71,10 @@ function App() {
             element={<Login user={user} setUser={setUser} />}
           />
           <Route path="/profile" element={<Profile user={user} />} />
+          <Route
+            path="/recover-password"
+            element={<RecoverPassword user={user} />}
+          />
         </Routes>
       </div>
     </BrowserRouter>

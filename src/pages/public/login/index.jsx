@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase/config";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, Link } from "react-router-dom";
 import "../../../css/login.css";
 
-function Login({ user, setUser }) {
+function Login({ user }) {
   if (user) {
     return <Navigate to="/profile" />;
   }
@@ -72,6 +72,7 @@ function Login({ user, setUser }) {
         <button type="submit" disabled={loading}>
           {loading ? "Cargando..." : "Iniciar sesión"}
         </button>
+        <Link to="/recover-password">¿Olvidaste tu contraseña?</Link>
       </form>
     </div>
   );

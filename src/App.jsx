@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase/config";
 
 import Home from "./pages/public/home";
 import Login from "./pages/public/login";
@@ -9,6 +11,26 @@ import Profile from "./pages/private/profile";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignOut = () => {
+    auth.signOut().then(() => {
+      setUser(null);
+    });
+  };
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <BrowserRouter>
@@ -24,13 +46,7 @@ function App() {
                   <Link to="/profile">Perfil</Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => {
-                      setUser(null);
-                    }}
-                  >
-                    Cerrar sesión
-                  </button>
+                  <button onClick={handleSignOut}>Cerrar sesión</button>
                 </li>
               </>
             ) : (

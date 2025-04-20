@@ -31,8 +31,7 @@ function Login({ user, setUser }) {
     setLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      setUser(userCredential.user);
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
       navigate("/");
     } catch (err) {
       console.error("Error signing in:", err);

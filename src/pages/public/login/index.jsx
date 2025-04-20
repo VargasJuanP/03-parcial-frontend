@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase/config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import "../../../css/login.css";
 
-function Login() {
+function Login({ user, setUser }) {
+  if (user) {
+    return <Navigate to="/profile" />;
+  }
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -27,8 +31,9 @@ function Login() {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      navigate("/dashboard");
+      const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      setUser(userCredential.user);
+      navigate("/");
     } catch (err) {
       console.error("Error signing in:", err);
       setError(

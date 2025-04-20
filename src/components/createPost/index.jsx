@@ -27,7 +27,7 @@ function CreatePost({ user, onPostCreated }) {
       setPostContent("");
 
       // Actualizar los posts
-      onPostCreated(prev => prev + 1);
+      onPostCreated();
     } catch (err) {
       setError("Error al publicar. Inténtalo de nuevo.");
     } finally {

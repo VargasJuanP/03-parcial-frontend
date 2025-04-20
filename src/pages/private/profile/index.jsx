@@ -39,12 +39,16 @@ function Profile({ user }) {
 
     fetchPosts();
   }, [refresh]);
+
+  const handleRefresh = () => {
+    setRefresh(prev => prev + 1);
+  };
   
   return (
     <div className="profile-container">
       <div>
         <h3>Crear nueva publicación</h3>
-        <CreatePost user={user} onPostCreated={setRefresh} />
+        <CreatePost user={user} onPostCreated={handleRefresh} />
       </div>
 
       <div className="posts-container">

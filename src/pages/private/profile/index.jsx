@@ -47,8 +47,7 @@ function Profile({ user }) {
   return (
     <div className="profile-container">
       <div>
-        <h3>Crear nueva publicación</h3>
-        <CreatePost user={user} onPostCreated={handleRefresh} />
+        <CreatePost user={user} handleRefresh={handleRefresh} />
       </div>
 
       <div className="posts-container">
@@ -62,7 +61,7 @@ function Profile({ user }) {
         )}
 
         {posts.map((post) => (
-          <Post key={post.id} post={post} />
+          <Post key={post.id} post={post} handleRefresh={handleRefresh} />
         ))}
       </div>
     </div>

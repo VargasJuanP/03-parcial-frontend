@@ -29,3 +29,8 @@
   white-space: pre-wrap;
 }
 
+.delete-post {
+  background-color: rgb(168, 51, 51);
+  border: none;
+  cursor: pointer;
+}

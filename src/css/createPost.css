@@ -6,3 +6,10 @@
   border-radius: 5px;
   resize: none;
 }
+
+.error-message {
+  color: #d93025;
+  font-size: 14px;
+  margin: 0;
+  padding: 5px 0;
+}

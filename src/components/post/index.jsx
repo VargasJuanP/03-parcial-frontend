@@ -153,17 +153,19 @@ function Post({ user, post, handleRefresh }) {
           </button>
           <span className="like-count">{likeCount}</span>
         </div>
-        <div className="replies">
-          <h3>Respuestas</h3>
-          <div className="replies-container">
+        {replies.length > 0 && (
+          <div className="replies">
+            <h3>Respuestas ({replies.length})</h3>
+            <div className="replies-container">
             {user && (
               <CreateReply user={user} postId={post.id} handleRefresh={handleRefreshReplies} />
             )}
             {replies.map((reply) => (
               <Reply key={reply.id} reply={reply} />
             ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

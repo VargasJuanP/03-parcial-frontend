@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { db } from "../firebase/config";
+import { db } from "../../firebase/config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import "../css/createPost.css";
+import "../../styles/createPost.css";
 
 function CreatePost({ user }) {
   const [postContent, setPostContent] = useState("");

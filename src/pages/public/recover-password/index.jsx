@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../../firebase/config";
-import { Navigate, Link } from "react-router-dom";
-import "../../../css/login.css";
+import { Navigate } from "react-router-dom";
+import "../../../styles/login.css";
 
 function RecoverPassword({ user }) {
   if (user) {

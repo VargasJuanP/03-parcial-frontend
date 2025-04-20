@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../../firebase/config";
 import { Navigate } from "react-router-dom";
-import "../../../css/register.css";
+import "../../../styles/register.css";
 
 function Register({ user }) {
   if (user) {

@@ -12,10 +12,14 @@ import {
 import { db } from "../../firebase/config";
 import { useState, useEffect } from "react";
 import CreateReply from "./createReply";
+import Reply from "./reply";
+import { formatDate } from "../../lib/utils";
 
 function Post({ user, post, handleRefresh }) {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [replies, setReplies] = useState([]);
+  const [refreshReplies, setRefreshReplies] = useState(0);
 
   useEffect(() => {
     // Chequear si el usuario ha dado like a este post
@@ -34,7 +38,7 @@ function Post({ user, post, handleRefresh }) {
     };
 
     checkIfLiked();
-  }, [post.id]);
+  }, []);
 
   useEffect(() => {
     // Obtener el numero de likes para este post
@@ -55,15 +59,23 @@ function Post({ user, post, handleRefresh }) {
     );
 
     return () => unsubscribe();
-  }, [post.id]);
+  }, []);
 
-  // Convertir el timestamp a un formato de fecha legible
-  const formatDate = (timestamp) => {
-    if (timestamp.seconds && timestamp.nanoseconds) {
-      return new Date(timestamp.seconds * 1000).toLocaleString();
-    }
+  useEffect(() => {
+    const fetchReplies = async () => {
+      const q = query(
+        collection(db, "tweets_replies"),
+        where("tweetId", "==", post.id)
+      );
+      const querySnapshot = await getDocs(q);
+      setReplies(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    };
 
-    return new Date(timestamp).toLocaleString();
+    fetchReplies();
+  }, [refreshReplies]);
+
+  const handleRefreshReplies = () => {
+    setRefreshReplies((prev) => prev + 1);
   };
 
   // Eliminar el post
@@ -140,7 +152,10 @@ function Post({ user, post, handleRefresh }) {
         <div className="replies">
           <h3>Respuestas</h3>
           <div className="replies-container">
-            <CreateReply user={user} postId={post.id} />
+            <CreateReply user={user} postId={post.id} handleRefresh={handleRefreshReplies} />
+            {replies.map((reply) => (
+              <Reply key={reply.id} reply={reply} />
+            ))}
           </div>
         </div>
       </div>

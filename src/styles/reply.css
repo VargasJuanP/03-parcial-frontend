@@ -1,0 +1,25 @@
+.reply {
+  background-color: #615e5e;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.reply-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reply-author {
+  font-weight: bold;
+}
+
+.reply-date {
+  font-size: 12px;
+}
+
+.reply-content {
+  margin-top: 5px;
+}
+
+

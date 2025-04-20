@@ -3,7 +3,7 @@ import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebase/config";
 
-function CreateReply({ user, postId }) {
+function CreateReply({ user, postId, handleRefresh }) {
   const [reply, setReply] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -23,6 +23,7 @@ function CreateReply({ user, postId }) {
       });
       
       setReply("");
+      handleRefresh();
     } catch (err) {
       setError("Error al enviar la respuesta. Inténtalo de nuevo.");
     } finally {

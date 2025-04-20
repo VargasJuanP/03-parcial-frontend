@@ -119,17 +119,19 @@ function Post({ user, post, handleRefresh }) {
       <div className="post-header">
         <span className="author-name">@{post.authorName}</span>
         <span className="post-date">{formatDate(post.createdAt)}</span>
-        <button className="delete-post" onClick={handleDelete}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
+        {user.uid === post.authorId && (
+          <button className="delete-post" onClick={handleDelete}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             width="16"
             height="16"
             fill="currentColor"
           >
             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
-          </svg>
-        </button>
+            </svg>
+          </button>
+        )}
       </div>
       <p className="post-content">{post.content}</p>
       <div className="post-footer">
@@ -152,7 +154,9 @@ function Post({ user, post, handleRefresh }) {
         <div className="replies">
           <h3>Respuestas</h3>
           <div className="replies-container">
-            <CreateReply user={user} postId={post.id} handleRefresh={handleRefreshReplies} />
+            {user && (
+              <CreateReply user={user} postId={post.id} handleRefresh={handleRefreshReplies} />
+            )}
             {replies.map((reply) => (
               <Reply key={reply.id} reply={reply} />
             ))}

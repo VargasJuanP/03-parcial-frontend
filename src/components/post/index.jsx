@@ -22,6 +22,8 @@ function Post({ user, post, handleRefresh }) {
   const [refreshReplies, setRefreshReplies] = useState(0);
 
   useEffect(() => {
+    if (!user) return;
+
     // Chequear si el usuario ha dado like a este post
     const checkIfLiked = async () => {
       try {
@@ -119,7 +121,7 @@ function Post({ user, post, handleRefresh }) {
       <div className="post-header">
         <span className="author-name">@{post.authorName}</span>
         <span className="post-date">{formatDate(post.createdAt)}</span>
-        {user.uid === post.authorId && (
+        {user && user.uid === post.authorId && (
           <button className="delete-post" onClick={handleDelete}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +139,7 @@ function Post({ user, post, handleRefresh }) {
       <div className="post-footer">
         <div className="like-container">
           <button
-            className={`like-button ${isLiked ? "liked" : ""}`}
+            className={`like-button ${user && isLiked ? "liked" : ""}`}
             onClick={handleLike}
           >
             <svg

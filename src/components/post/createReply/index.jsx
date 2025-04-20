@@ -18,6 +18,7 @@ function CreateReply({ user, postId, handleRefresh }) {
       await addDoc(collection(db, "tweets_replies"), {
         content: reply,
         authorId: user.uid,
+        authorName: user.displayName,
         tweetId: postId,
         createdAt: serverTimestamp()
       });

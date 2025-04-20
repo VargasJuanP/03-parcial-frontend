@@ -59,6 +59,7 @@
   border: none;
   cursor: pointer;
   font-size: 20px;
+  fill: #9e9e9e;
 }
 
 .like-button.liked svg {

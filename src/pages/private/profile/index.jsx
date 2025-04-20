@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { db } from "../../../firebase/config";
-import { collection, query, getDocs, orderBy } from "firebase/firestore";
+import { collection, query, getDocs, orderBy, where } from "firebase/firestore";
 import CreatePost from "../../../components/createPost";
 import Post from "../../../components/post";
 import "../../../styles/profile.css";
@@ -21,7 +21,11 @@ function Profile({ user }) {
     const fetchPosts = async () => {
       try {
         // Ordenadas segun la mas reciente
-        const q = query(collection(db, "tweets"), orderBy("createdAt", "desc"));
+        const q = query(
+          collection(db, "tweets"),
+          where("authorId", "==", user.uid),
+          orderBy("createdAt", "desc")
+        );
         const querySnapshot = await getDocs(q);
         const postsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -29,6 +33,7 @@ function Profile({ user }) {
         }));
         setPosts(postsData);
       } catch (err) {
+        console.error("Error al cargar las publicaciones:", err);
         setError(
           "Error al cargar las publicaciones. Por favor, intenta de nuevo."
         );
@@ -41,9 +46,9 @@ function Profile({ user }) {
   }, [refresh]);
 
   const handleRefresh = () => {
-    setRefresh(prev => prev + 1);
+    setRefresh((prev) => prev + 1);
   };
-  
+
   return (
     <div className="profile-container">
       <div>
@@ -61,7 +66,12 @@ function Profile({ user }) {
         )}
 
         {posts.map((post) => (
-          <Post key={post.id} user={user} post={post} handleRefresh={handleRefresh} />
+          <Post
+            key={post.id}
+            user={user}
+            post={post}
+            handleRefresh={handleRefresh}
+          />
         ))}
       </div>
     </div>

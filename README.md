@@ -1,7 +1,7 @@
 # Parcial 2
 
 * Giuseppe Gomez
-* Miguel Garcia
+* Juan Padilla
 * Juan Vargas
 
 ## Demo

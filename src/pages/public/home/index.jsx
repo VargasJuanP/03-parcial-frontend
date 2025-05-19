@@ -1,6 +1,7 @@
 import CreatePost from "../../../components/createPost";
 import Post from "../../../components/post";
-import { collection, query, getDocs, orderBy, where } from "firebase/firestore";
+import LoginCTA from "../../../components/experimentUI/LoginCTA";
+import { collection, query, getDocs, orderBy } from "firebase/firestore";
 import "../../../styles/home.css";
 import { useState, useEffect } from "react";
 import { db } from "../../../firebase/config";
@@ -62,7 +63,11 @@ function Home({ user }) {
       {user ? (
         <p>Bienvenido, {user.displayName}</p>
       ) : (
-        <p>Inicia sesión para continuar</p>
+        <div className="login-prompt">
+          <p>¡Únete a la conversación! </p>
+          {/* Aquí usamos el componente experimental en lugar del texto fijo */}
+          <LoginCTA />
+        </div>
       )}
       <div className="content">
         {user && <CreatePost user={user} handleRefresh={handleRefresh} />}

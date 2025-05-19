@@ -3,3 +3,30 @@
     margin: 0 auto;
     margin-top: 100px;
 }
+
+.login-button-cta {
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-button-cta:hover {
+  background-color: #0c85d0;
+}
+
+.login-link-cta {
+  color: #1da1f2;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.login-link-cta:hover {
+  color: #0c85d0;
+  text-decoration: underline;
+}

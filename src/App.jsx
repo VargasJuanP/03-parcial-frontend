@@ -3,9 +3,10 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./styles/App.css";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/config";
-import { Sentry } from "./components/sentry/sentry"; // Importamos Sentry desde nuestro archivo de configuración
-import { startTransaction } from "./components/sentry/transaction"; // Importamos la función de transacción
+import { Sentry } from "./components/sentry/sentry"; 
+import { startTransaction } from "./components/sentry/transaction"; 
 import { withSentry, SentryComponentErrorBoundary } from "./components/sentry/SentryWrapper";
+import { initGrowthBook } from "./growthbook/config";
 
 import Home from "./pages/public/home";
 import Login from "./pages/public/login";
@@ -26,6 +27,9 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+      
+      // Inicializar GrowthBook con información del usuario
+      initGrowthBook(currentUser);
       
       // Si el usuario inicia sesión, registra el evento en Sentry con información del usuario
       if (currentUser) {

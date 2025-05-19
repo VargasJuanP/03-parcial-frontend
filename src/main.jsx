@@ -4,6 +4,8 @@ import './styles/index.css'
 import App from './App.jsx'
 import initSentry, { Sentry } from './components/sentry/sentry.js'
 import { configureSentryTags } from './lib/sentryUtils'
+import { GrowthBookProvider } from '@growthbook/growthbook-react'
+import { growthbook } from './growthbook/config'
 
 initSentry();
 
@@ -52,7 +54,9 @@ const SentryErrorBoundary = ({ children }) => (
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <SentryErrorBoundary>
-      <App />
+      <GrowthBookProvider growthbook={growthbook}>
+        <App />
+      </GrowthBookProvider>
     </SentryErrorBoundary>
   </StrictMode>,
 )

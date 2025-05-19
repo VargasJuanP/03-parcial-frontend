@@ -6,8 +6,6 @@ function LoginCTA() {
     defaultValue: "link" // Si no hay feature flag, usar enlace como default
   });
 
-  console.log(value)
-
   if (value === "button") {
     return (
       <Link to="/login">

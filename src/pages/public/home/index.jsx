@@ -4,6 +4,8 @@ import { collection, query, getDocs, orderBy, where } from "firebase/firestore";
 import "../../../styles/home.css";
 import { useState, useEffect } from "react";
 import { db } from "../../../firebase/config";
+import { startTransaction } from "../../../components/sentry/transaction";
+import { withSentry, useSentryMonitor } from "../../../components/sentry/SentryWrapper";
 
 function Home({ user }) {
   const [posts, setPosts] = useState([]);
@@ -11,10 +13,16 @@ function Home({ user }) {
   const [error, setError] = useState(null);
   // Para que se actualice la lista de posts cuando se crea un nuevo post
   const [refresh, setRefresh] = useState(0);
+  
+  const { captureComponentError } = useSentryMonitor("Home");
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        const transaction = startTransaction({
+          name: "fetch-posts",
+        });
+        
         // Ordenadas segun la mas reciente
         const q = query(collection(db, "tweets"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(q);
@@ -23,9 +31,19 @@ function Home({ user }) {
           ...doc.data(),
         }));
         setPosts(postsData);
+        
+        transaction.setData("postCount", postsData.length);
+        transaction.finish();
       } catch (err) {
         console.error("Error al cargar el timeline:", err);
         setError("Error al cargar el timeline. Por favor, intenta de nuevo.");
+        
+        captureComponentError(err, {
+          action: "fetchPosts",
+          userId: user?.uid || "anonymous",
+          postsCount: posts.length,
+          refreshCount: refresh
+        });
       } finally {
         setLoading(false);
       }
@@ -72,4 +90,7 @@ function Home({ user }) {
   );
 }
 
-export default Home;
+export default withSentry(Home, {
+  componentName: "Home",
+  shouldProfile: true
+});

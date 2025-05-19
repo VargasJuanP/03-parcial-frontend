@@ -14,18 +14,29 @@ import { useState, useEffect } from "react";
 import CreateReply from "./createReply";
 import Reply from "./reply";
 import { formatDate } from "../../lib/utils";
+import { Sentry } from "../../components/sentry/sentry";
+import { startTransaction } from "../../components/sentry/transaction";
+import { withSentry, useSentryMonitor } from "../../components/sentry/SentryWrapper";
 
 function Post({ user, post, handleRefresh }) {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [replies, setReplies] = useState([]);
   const [refreshReplies, setRefreshReplies] = useState(0);
+  
+  const { captureComponentError } = useSentryMonitor("Post");
 
   useEffect(() => {
     if (!user) return;
 
     // Chequear si el usuario ha dado like a este post
     const checkIfLiked = async () => {
+      const transaction = startTransaction({
+        name: "post-check-like-status",
+        op: "firebase.query",
+        data: { postId: post.id }
+      });
+      
       try {
         const q = query(
           collection(db, "tweets_likes"),
@@ -34,8 +45,16 @@ function Post({ user, post, handleRefresh }) {
         );
         const querySnapshot = await getDocs(q);
         setIsLiked(!querySnapshot.empty);
+        transaction.setStatus("ok");
       } catch (error) {
         console.error("Error checking like status:", error);
+        captureComponentError(error, {
+          action: "check_like_status", 
+          postId: post.id
+        });
+        transaction.setStatus("error");
+      } finally {
+        transaction.finish();
       }
     };
 
@@ -44,6 +63,12 @@ function Post({ user, post, handleRefresh }) {
 
   useEffect(() => {
     // Obtener el numero de likes para este post
+    const transaction = startTransaction({
+      name: "post-get-likes-count",
+      op: "firebase.subscribe",
+      data: { postId: post.id }
+    });
+    
     const likesQuery = query(
       collection(db, "tweets_likes"),
       where("tweetId", "==", post.id)
@@ -54,25 +79,53 @@ function Post({ user, post, handleRefresh }) {
       likesQuery,
       (snapshot) => {
         setLikeCount(snapshot.docs.length);
+        transaction.setStatus("ok");
       },
       (error) => {
         console.error("Error fetching likes:", error);
+        captureComponentError(error, {
+          action: "fetch_likes_count", 
+          postId: post.id
+        });
+        transaction.setStatus("error");
       }
     );
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      transaction.finish();
+    };
   }, []);
 
   useEffect(() => {
     const fetchReplies = async () => {
-      const q = query(
-        collection(db, "tweets_replies"),
-        where("tweetId", "==", post.id)
-      );
-      const querySnapshot = await getDocs(q);
-      setReplies(
-        querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-      );
+      const transaction = startTransaction({
+        name: "post-fetch-replies",
+        op: "firebase.query",
+        data: { postId: post.id }
+      });
+      
+      try {
+        const q = query(
+          collection(db, "tweets_replies"),
+          where("tweetId", "==", post.id)
+        );
+        const querySnapshot = await getDocs(q);
+        setReplies(
+          querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        );
+        transaction.setData("replies_count", querySnapshot.docs.length);
+        transaction.setStatus("ok");
+      } catch (error) {
+        console.error("Error fetching replies:", error);
+        captureComponentError(error, {
+          action: "fetch_replies", 
+          postId: post.id
+        });
+        transaction.setStatus("error");
+      } finally {
+        transaction.finish();
+      }
     };
 
     fetchReplies();
@@ -84,11 +137,33 @@ function Post({ user, post, handleRefresh }) {
 
   // Eliminar el post
   const handleDelete = async () => {
+    const transaction = startTransaction({
+      name: "post-delete",
+      op: "firebase.delete",
+      data: { postId: post.id }
+    });
+    
     try {
       await deleteDoc(doc(db, "tweets", post.id));
       handleRefresh();
+      
+      Sentry.addBreadcrumb({
+        category: 'user-action',
+        message: 'Post eliminado',
+        level: 'info',
+        data: { postId: post.id }
+      });
+      
+      transaction.setStatus("ok");
     } catch (error) {
       console.error("Error al eliminar el post:", error);
+      captureComponentError(error, {
+        action: "delete_post", 
+        postId: post.id
+      });
+      transaction.setStatus("error");
+    } finally {
+      transaction.finish();
     }
   };
 
@@ -96,6 +171,15 @@ function Post({ user, post, handleRefresh }) {
   const handleLike = async () => {
     if (!user) return;
 
+    const transaction = startTransaction({
+      name: "post-toggle-like",
+      op: "firebase.write",
+      data: { 
+        postId: post.id,
+        action: isLiked ? "unlike" : "like"
+      }
+    });
+    
     try {
       const likeId = `${user.uid}_${post.id}`;
       const likeRef = doc(db, "tweets_likes", likeId);
@@ -111,10 +195,26 @@ function Post({ user, post, handleRefresh }) {
         });
       }
 
+      Sentry.addBreadcrumb({
+        category: 'user-action',
+        message: isLiked ? 'Post unliked' : 'Post liked',
+        level: 'info',
+        data: { postId: post.id }
+      });
+      
       setIsLiked(!isLiked);
       handleRefresh();
+      transaction.setStatus("ok");
     } catch (error) {
       console.error("Error updating like:", error);
+      captureComponentError(error, {
+        action: "toggle_like", 
+        postId: post.id,
+        isLiked
+      });
+      transaction.setStatus("error");
+    } finally {
+      transaction.finish();
     }
   };
 
@@ -177,4 +277,7 @@ function Post({ user, post, handleRefresh }) {
   );
 }
 
-export default Post;
+export default withSentry(Post, { 
+  componentName: "Post", 
+  shouldProfile: true
+});

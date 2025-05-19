@@ -3,6 +3,9 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../../firebase/config";
 import { Navigate } from "react-router-dom";
 import "../../../styles/register.css";
+import { Sentry } from "../../../components/sentry/sentry";
+import { startTransaction } from "../../../components/sentry/transaction";
+import { withSentry, useSentryMonitor } from "../../../components/sentry/SentryWrapper";
 
 function Register({ user }) {
   if (user) {
@@ -16,6 +19,8 @@ function Register({ user }) {
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  
+  const { captureComponentError } = useSentryMonitor("Register");
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -30,6 +35,13 @@ function Register({ user }) {
     setError(null);
 
     try {
+      const transaction = startTransaction({
+        name: "register-transaction",
+      });
+      
+      transaction.setData("email_domain", formData.email.split('@')[1]);
+      transaction.setData("username_length", formData.username.length);
+      
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
@@ -39,11 +51,30 @@ function Register({ user }) {
       await updateProfile(userCredential.user, {
         displayName: formData.username,
       });
-
+      
+      Sentry.captureMessage("Registro de usuario exitoso", {
+        level: "info",
+        tags: {
+          action: "register_success",
+          email_domain: formData.email.split('@')[1],
+        }
+      });
+      
+      transaction.finish();
+      
+      // Limpiar formulario y mostrar éxito
       setFormData({ username: "", email: "", password: "" });
       setSuccess(true);
     } catch (error) {
       setError("Error al registrar el usuario. Inténtalo de nuevo.");
+      
+      captureComponentError(error, {
+        action: "register_attempt",
+        errorCode: error.code,
+        errorMessage: error.message,
+        email_domain: formData.email.split('@')[1],
+        username_length: formData.username.length
+      });
     }
   };
 
@@ -90,4 +121,7 @@ function Register({ user }) {
   );
 }
 
-export default Register;
+export default withSentry(Register, {
+  componentName: "Register",
+  shouldProfile: true
+});

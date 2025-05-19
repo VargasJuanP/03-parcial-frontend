@@ -2,11 +2,16 @@ import { useState } from "react";
 import { db } from "../../firebase/config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import "../../styles/createPost.css";
+import { Sentry } from "../sentry/sentry";
+import { startTransaction } from "../sentry/transaction";
+import { withSentry, useSentryMonitor } from "../sentry/SentryWrapper";
 
 function CreatePost({ user, handleRefresh }) {
   const [postContent, setPostContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  
+  const { captureComponentError } = useSentryMonitor("CreatePost");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,6 +22,13 @@ function CreatePost({ user, handleRefresh }) {
     setError(null);
 
     try {
+      const transaction = startTransaction({
+        name: "create-post",
+      });
+      
+      transaction.setData("postLength", postContent.length);
+      transaction.setData("userId", user.uid);
+      
       await addDoc(collection(db, "tweets"), {
         content: postContent,
         authorId: user.uid,
@@ -24,12 +36,32 @@ function CreatePost({ user, handleRefresh }) {
         createdAt: serverTimestamp(),
       });
       
+      Sentry.captureMessage("Post creado con éxito", {
+        level: "info",
+        tags: {
+          action: "create_post",
+          user_id: user.uid
+        },
+        extra: {
+          contentLength: postContent.length
+        }
+      });
+      
+      transaction.finish();
+      
       setPostContent("");
 
       // Actualizar los posts
       handleRefresh();
     } catch (err) {
       setError("Error al publicar. Inténtalo de nuevo.");
+      
+      captureComponentError(err, {
+        action: "create_post",
+        userId: user.uid,
+        displayName: user.displayName,
+        contentLength: postContent.length
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -52,4 +84,7 @@ function CreatePost({ user, handleRefresh }) {
   );
 }
 
-export default CreatePost;
+export default withSentry(CreatePost, {
+  componentName: "CreatePost",
+  shouldProfile: true
+});

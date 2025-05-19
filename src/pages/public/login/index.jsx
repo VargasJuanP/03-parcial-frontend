@@ -3,6 +3,9 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase/config";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import "../../../styles/login.css";
+import { Sentry } from "../../../components/sentry/sentry";
+import { startTransaction } from "../../../components/sentry/transaction";
+import { withSentry, useSentryMonitor } from "../../../components/sentry/SentryWrapper";
 
 function Login({ user }) {
   if (user) {
@@ -16,6 +19,8 @@ function Login({ user }) {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  const { captureComponentError } = useSentryMonitor("Login");
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -31,17 +36,40 @@ function Login({ user }) {
     setLoading(true);
 
     try {
+      const transaction = startTransaction({
+        name: "login-transaction",
+      });
+      
+      transaction.setData("email_domain", formData.email.split('@')[1]);
+      
       await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      
+      Sentry.captureMessage("Inicio de sesión exitoso", {
+        level: "info",
+        tags: {
+          action: "login_success",
+          email_domain: formData.email.split('@')[1]
+        }
+      });
+      
+      transaction.finish();
+      
       navigate("/");
     } catch (err) {
       console.error("Error signing in:", err);
-      setError(
-        // Error de credenciales
-        err.code === "auth/invalid-credential"
-          ? "Correo o contraseña incorrectos"
-          : // Error interno
-            "Error al iniciar sesión. Inténtalo de nuevo."
-      );
+      
+      const errorMessage = err.code === "auth/invalid-credential"
+        ? "Correo o contraseña incorrectos"
+        : "Error al iniciar sesión. Inténtalo de nuevo.";
+      
+      setError(errorMessage);
+      
+      captureComponentError(err, {
+        action: "login_attempt",
+        errorCode: err.code,
+        errorMessage: err.message,
+        email_domain: formData.email.split('@')[1]
+      });
     } finally {
       setLoading(false);
     }
@@ -78,4 +106,7 @@ function Login({ user }) {
   );
 }
 
-export default Login;
+export default withSentry(Login, {
+  componentName: "Login",
+  shouldProfile: true
+});

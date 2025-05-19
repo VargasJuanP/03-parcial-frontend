@@ -3,8 +3,8 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../../firebase/config";
 import { Navigate } from "react-router-dom";
 import "../../../styles/register.css";
-import { Sentry } from "../../../components/sentry/sentry";
-import { startTransaction } from "../../../components/sentry/transaction";
+import * as Sentry from "@sentry/react";
+import { startTransaction } from "../../../lib/sentryUtils";
 import { withSentry, useSentryMonitor } from "../../../components/sentry/SentryWrapper";
 
 function Register({ user }) {

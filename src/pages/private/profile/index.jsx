@@ -5,8 +5,8 @@ import { collection, query, getDocs, orderBy, where } from "firebase/firestore";
 import CreatePost from "../../../components/createPost";
 import Post from "../../../components/post";
 import "../../../styles/profile.css";
-import { Sentry } from "../../../components/sentry/sentry";
-import { startTransaction } from "../../../components/sentry/transaction";
+import * as Sentry from "@sentry/react";
+import { startTransaction } from "../../../lib/sentryUtils";
 import { withSentry, useSentryMonitor, SentryComponentErrorBoundary } from "../../../components/sentry/SentryWrapper";
 
 function Profile({ user }) {

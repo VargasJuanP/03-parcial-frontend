@@ -14,8 +14,8 @@ import { useState, useEffect } from "react";
 import CreateReply from "./createReply";
 import Reply from "./reply";
 import { formatDate } from "../../lib/utils";
-import { Sentry } from "../../components/sentry/sentry";
-import { startTransaction } from "../../components/sentry/transaction";
+import * as Sentry from "@sentry/react";
+import { startTransaction } from "../../lib/sentryUtils";
 import { withSentry, useSentryMonitor } from "../../components/sentry/SentryWrapper";
 
 function Post({ user, post, handleRefresh }) {

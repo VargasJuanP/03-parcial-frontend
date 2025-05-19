@@ -2,9 +2,9 @@ import { useState } from "react";
 import { db } from "../../firebase/config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import "../../styles/createPost.css";
-import { Sentry } from "../sentry/sentry";
-import { startTransaction } from "../sentry/transaction";
-import { withSentry, useSentryMonitor } from "../sentry/SentryWrapper";
+import * as Sentry from "@sentry/react";
+import { startTransaction } from "../../lib/sentryUtils";
+import { withSentry, useSentryMonitor } from "../../components/sentry/SentryWrapper";
 
 function CreatePost({ user, handleRefresh }) {
   const [postContent, setPostContent] = useState("");

@@ -31,6 +31,8 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 VITE_GROWTHBOOK_API_HOST=
 VITE_GROWTHBOOK_CLIENT_KEY=
+VITE_SENTRY_DSN=
+SENTRY_AUTH_TOKEN=
 ```
 
 Se debe crear 2 aplicaciones en Firebase:
@@ -54,6 +56,13 @@ Este proyecto utiliza **GrowthBook** para realizar un experimento A/B con el obj
   * **Variante B:** El mensaje de iniciar sesión se muestra como un **botón**.
 
 ![image](https://github.com/user-attachments/assets/6f6ab0e7-574f-41c3-b359-6b6846e27c43)
+
+## Monitoreo con Sentry
+
+![image](https://github.com/user-attachments/assets/d92fdcc2-91e4-4993-8124-135bc4f1546e)
+![image](https://github.com/user-attachments/assets/2bc51f4b-b546-490f-abda-ca7c500cb29e)
+
+
 
 ## Pruebas
 

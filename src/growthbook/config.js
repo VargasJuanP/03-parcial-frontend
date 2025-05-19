@@ -22,9 +22,19 @@ export const growthbook = new GrowthBook({
 
 // Función para inicializar GrowthBook con los atributos del usuario
 export const initGrowthBook = (user) => {
+  // Obtener o generar un ID anónimo si no hay usuario autenticado
+  let anonymousId = localStorage.getItem("anonymousId");
+  
+  if (!anonymousId) {
+    anonymousId = crypto.randomUUID();
+    localStorage.setItem("anonymousId", anonymousId);
+  }
+
+  const userId = user?.uid || anonymousId;
+
   // Configurar atributos del usuario
   growthbook.setAttributes({
-    id: user?.uid || "anonymous",
+    id: userId,
     loggedIn: !!user,
     email: user?.email,
     displayName: user?.displayName,

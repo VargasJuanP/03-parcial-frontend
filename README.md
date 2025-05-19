@@ -20,7 +20,7 @@ Para correr el proyecto, se debe instalar las dependencias:
 npm install
 ```
 
-Luego, se debe configurar el archivo `.env` con las credenciales de la cuenta de Firebase.
+Luego, se debe configurar el archivo `.env` con las credenciales de la cuenta de Firebase y Growthbook.
 
 ```bash
 VITE_FIREBASE_API_KEY=
@@ -29,6 +29,8 @@ VITE_FIREBASE_PROJECT_ID=
 VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
+VITE_GROWTHBOOK_API_HOST=
+VITE_GROWTHBOOK_CLIENT_KEY=
 ```
 
 Se debe crear 2 aplicaciones en Firebase:

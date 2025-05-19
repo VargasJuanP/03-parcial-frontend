@@ -48,10 +48,10 @@ npm run dev
 
 Este proyecto utiliza **GrowthBook** para realizar un experimento A/B con el objetivo de evaluar cuál versión del mensaje de "Iniciar sesión" genera mayor interacción.
 
-  * **Variante A:** El mensaje de iniciar sesión se muestra como un **botón**.
-  * **Variante B:** El mensaje se muestra como un **link**.
+  * **Variante A:** El mensaje se muestra como un **link**.
+  * **Variante B:** El mensaje de iniciar sesión se muestra como un **botón**.
 
-![image](https://github.com/user-attachments/assets/06f7ab77-1266-416e-b4c1-6c0c0e82adc4)
+![image](https://github.com/user-attachments/assets/6f6ab0e7-574f-41c3-b359-6b6846e27c43)
 
 ## Pruebas
 

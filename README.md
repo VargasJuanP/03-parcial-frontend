@@ -10,7 +10,7 @@ Se tiene una demo del proyecto funcionando en el siguiente link:
 
 **NOTA:** La ruta `/profile` da problemas al acceder de manera directa (problema del hosting gratuito), por lo que se debe acceder primero al inicio `/` y luego hacer click en el enlace de perfil que esta en la barra de navegación.
 
-https://02-parcial-frontend.vercel.app/
+https://03-parcial-frontend.vercel.app/
 
 ## Local
 

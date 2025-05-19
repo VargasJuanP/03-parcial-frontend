@@ -3,8 +3,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase/config";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import "../../../styles/login.css";
-import { Sentry } from "../../../components/sentry/sentry";
-import { startTransaction } from "../../../components/sentry/transaction";
+import * as Sentry from "@sentry/react";
+import { startTransaction } from "../../../lib/sentryUtils";
 import { withSentry, useSentryMonitor } from "../../../components/sentry/SentryWrapper";
 
 function Login({ user }) {

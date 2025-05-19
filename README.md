@@ -1,4 +1,4 @@
-# Parcial 2
+# Parcial 3
 
 * Giuseppe Gomez
 * Juan Padilla
@@ -40,4 +40,23 @@ Luego, se debe correr el proyecto:
 
 ```bash
 npm run dev
+```
+
+---
+
+## Experimento con GrowthBook
+
+Este proyecto utiliza **GrowthBook** para realizar un experimento A/B con el objetivo de evaluar cuál versión del mensaje de "Iniciar sesión" genera mayor interacción.
+
+  * **Variante A:** El mensaje de iniciar sesión se muestra como un **botón**.
+  * **Variante B:** El mensaje se muestra como un **link**.
+
+![image](https://github.com/user-attachments/assets/06f7ab77-1266-416e-b4c1-6c0c0e82adc4)
+
+## Pruebas
+
+Se han implementado **pruebas unitarias** utilizando `Vitest` y `@testing-library/react`. Las pruebas cubren los componentes clave de Register, Login, Post y CreatePost, las cuales se ejecutan automáticamente al hacer push en el branch main, para asegurar que los cambios no rompan la funcionalidad existente.
+
+```bash
+npm run test
 ```

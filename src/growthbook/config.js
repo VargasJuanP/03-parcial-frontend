@@ -4,10 +4,9 @@ import { GrowthBook } from "@growthbook/growthbook-react";
 export const growthbook = new GrowthBook({
   apiHost: import.meta.env.VITE_GROWTHBOOK_API_HOST || "https://cdn.growthbook.io",
   clientKey: import.meta.env.VITE_GROWTHBOOK_CLIENT_KEY,
-  enableDevMode: import.meta.env.DEV, // Facilita la depuración en desarrollo
-  subscribeToChanges: true, // Actualiza automáticamente cuando los features cambian
+  enableDevMode: import.meta.env.DEV,
+  subscribeToChanges: true,
   trackingCallback: (experiment, result) => {
-    // Aquí podemos enviar eventos de tracking a una herramienta analítica
     console.log("Experimento visto:", experiment.key, "Variante:", result.variationId);
     
     // Integración con Sentry si es necesario
@@ -29,7 +28,6 @@ export const initGrowthBook = (user) => {
     loggedIn: !!user,
     email: user?.email,
     displayName: user?.displayName,
-    // Otros atributos que quieras usar para segmentación
     date: new Date().toISOString(),
     environment: import.meta.env.MODE
   });
